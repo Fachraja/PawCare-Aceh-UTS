@@ -25,39 +25,45 @@ class CatController extends Controller
         return view('cats.create');
     }
 
-   public function store(Request $request)
-{
-    $request->validate([
-        'nama' => 'required',
-        'umur' => 'required|integer',
-        'jenis_kelamin' => 'required',
-        'lokasi' => 'required',
-        'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-    ]);
+    public function store(Request $request)
+    {
+        $request->validate([
+            'nama' => 'required',
+            'umur' => 'required|integer',
+            'jenis_kelamin' => 'required',
+            'lokasi' => 'required',
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
 
-    $fotoPath = null;
+        $fotoPath = null;
 
-    if ($request->hasFile('foto')) {
-        $fotoPath = $request->file('foto')->store('cats', 'public');
+        if ($request->hasFile('foto')) {
+            $fotoPath = $request->file('foto')->store('cats', 'public');
+        }
+
+        Cat::create([
+            'user_id' => Auth::id(),
+            'nama' => $request->nama,
+            'umur' => $request->umur,
+            'jenis_kelamin' => $request->jenis_kelamin,
+            'ras' => $request->ras,
+            'warna' => $request->warna,
+            'lokasi' => $request->lokasi,
+            'foto' => $fotoPath,
+            'deskripsi' => $request->deskripsi,
+            'status' => 'tersedia',
+        ]);
+
+        return redirect()
+            ->route('cats.index')
+            ->with('success', 'Data kucing berhasil ditambahkan');
     }
 
-    Cat::create([
-        'user_id' => Auth::id(),
-        'nama' => $request->nama,
-        'umur' => $request->umur,
-        'jenis_kelamin' => $request->jenis_kelamin,
-        'ras' => $request->ras,
-        'warna' => $request->warna,
-        'lokasi' => $request->lokasi,
-        'foto' => $fotoPath,
-        'deskripsi' => $request->deskripsi,
-        'status' => 'tersedia',
-    ]);
+    public function show(Cat $cat)
+    {
+        return view('cats.show', compact('cat'));
+    }
 
-    return redirect()
-        ->route('cats.index')
-        ->with('success', 'Data kucing berhasil ditambahkan');
-}
     public function edit(Cat $cat)
     {
         return view('cats.edit', compact('cat'));
@@ -82,7 +88,8 @@ class CatController extends Controller
             'deskripsi' => $request->deskripsi,
         ]);
 
-        return redirect()->route('cats.index')
+        return redirect()
+            ->route('cats.index')
             ->with('success', 'Data kucing berhasil diperbarui');
     }
 
@@ -90,7 +97,8 @@ class CatController extends Controller
     {
         $cat->delete();
 
-        return redirect()->route('cats.index')
+        return redirect()
+            ->route('cats.index')
             ->with('success', 'Data kucing berhasil dihapus');
     }
 }
