@@ -14,16 +14,40 @@
                     </p>
                 </div>
 
-                <a href="{{ route('cats.create') }}"
-                   class="mt-4 md:mt-0 bg-orange-500 hover:bg-orange-600 text-white px-5 py-3 rounded-xl shadow-md">
-                    + Tambah Kucing
-                </a>
+                <div class="flex flex-wrap gap-2 mt-4 md:mt-0">
+
+                    {{-- Penitipan --}}
+                    <a href="{{ route('entrustments.index') }}"
+                       class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-3 rounded-xl shadow-md">
+                        🏠 Penitipan Kucing
+                    </a>
+
+                    {{-- Lokasi Penampungan --}}
+                    <a href="{{ route('shelters.index') }}"
+                       class="bg-green-500 hover:bg-green-600 text-white px-4 py-3 rounded-xl shadow-md">
+                        📍 Lokasi Penampungan
+                    </a>
+
+                    {{-- Tambah Kucing --}}
+                    <a href="{{ route('cats.create') }}"
+                       class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-3 rounded-xl shadow-md">
+                        + Tambah Kucing
+                    </a>
+
+                </div>
             </div>
 
             {{-- Alert Success --}}
             @if(session('success'))
                 <div class="bg-green-100 border border-green-300 text-green-700 px-4 py-3 rounded-lg mb-6">
                     {{ session('success') }}
+                </div>
+            @endif
+
+            {{-- Alert Error --}}
+            @if(session('error'))
+                <div class="bg-red-100 border border-red-300 text-red-700 px-4 py-3 rounded-lg mb-6">
+                    {{ session('error') }}
                 </div>
             @endif
 
@@ -120,14 +144,48 @@
                                     </div>
                                 @endif
 
-                                {{-- Tombol --}}
-                                <div class="flex mt-5">
+                                {{-- Tombol Detail dan Adopsi --}}
+                                <div class="flex flex-wrap gap-2 mt-5">
 
-                                    <a href="{{ route('cats.edit', $cat->id) }}"
-                                       class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg">
-                                        Edit
+                                    {{-- Detail --}}
+                                    <a href="{{ route('cats.show', $cat->id) }}"
+                                       class="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg">
+                                        👁️ Detail
                                     </a>
 
+                                    {{-- Adopsi --}}
+                                    @if($cat->status === 'tersedia')
+                                        <form action="{{ route('cats.adopt', $cat->id) }}"
+                                              method="POST">
+
+                                            @csrf
+
+                                            <button
+                                                type="submit"
+                                                onclick="return confirm('Yakin ingin mengajukan adopsi kucing ini?')"
+                                                class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg">
+                                                ❤️ Adopsi
+                                            </button>
+
+                                        </form>
+                                    @else
+                                        <span class="bg-gray-300 text-gray-600 px-4 py-2 rounded-lg">
+                                            Tidak Tersedia
+                                        </span>
+                                    @endif
+
+                                </div>
+
+                                {{-- Tombol Edit dan Hapus --}}
+                                <div class="flex mt-2">
+
+                                    {{-- Edit --}}
+                                    <a href="{{ route('cats.edit', $cat->id) }}"
+                                       class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg">
+                                        ✏️ Edit
+                                    </a>
+
+                                    {{-- Hapus --}}
                                     <form action="{{ route('cats.destroy', $cat->id) }}"
                                           method="POST"
                                           class="ml-2">
@@ -139,7 +197,7 @@
                                             type="submit"
                                             onclick="return confirm('Yakin ingin menghapus data ini?')"
                                             class="bg-rose-500 hover:bg-rose-600 text-white px-4 py-2 rounded-lg">
-                                            Hapus
+                                            🗑️ Hapus
                                         </button>
 
                                     </form>
