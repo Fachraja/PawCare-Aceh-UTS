@@ -28,6 +28,14 @@
             </p>
         </div>
 
+        <!-- Pesan Error -->
+        @if(session('error'))
+            <div class="mb-6 bg-red-100 border border-red-300 text-red-700
+                        px-4 py-3 rounded-lg">
+                {{ session('error') }}
+            </div>
+        @endif
+
         <!-- Card -->
         <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
 
@@ -145,19 +153,43 @@
                     </div>
 
                     <!-- Tombol -->
-                    <div class="flex gap-3 mt-8">
+                    <div class="flex flex-col gap-3 mt-8">
 
-                        <a href="{{ route('cats.edit', $cat) }}"
-                           class="flex-1 text-center bg-blue-600 hover:bg-blue-700
-                                  text-white font-semibold py-3 rounded-lg">
-                            Edit Data
-                        </a>
+                        @if($cat->status === 'tersedia')
+                            <form action="{{ route('cats.adopt', $cat) }}"
+                                  method="POST"
+                                  onsubmit="return confirm('Apakah kamu yakin ingin mengajukan adopsi untuk kucing ini?')">
+                                @csrf
 
-                        <a href="{{ route('cats.index') }}"
-                           class="flex-1 text-center bg-gray-200 hover:bg-gray-300
-                                  text-gray-700 font-semibold py-3 rounded-lg">
-                            Kembali
-                        </a>
+                                <button
+                                    type="submit"
+                                    class="w-full bg-green-600 hover:bg-green-700
+                                           text-white font-semibold py-3 rounded-lg">
+                                    🐾 Ajukan Adopsi
+                                </button>
+                            </form>
+                        @else
+                            <div class="w-full text-center bg-gray-100
+                                        text-gray-500 font-semibold py-3 rounded-lg">
+                                Kucing Tidak Tersedia
+                            </div>
+                        @endif
+
+                        <div class="flex gap-3">
+
+                            <a href="{{ route('cats.edit', $cat) }}"
+                               class="flex-1 text-center bg-blue-600 hover:bg-blue-700
+                                      text-white font-semibold py-3 rounded-lg">
+                                Edit Data
+                            </a>
+
+                            <a href="{{ route('cats.index') }}"
+                               class="flex-1 text-center bg-gray-200 hover:bg-gray-300
+                                      text-gray-700 font-semibold py-3 rounded-lg">
+                                Kembali
+                            </a>
+
+                        </div>
 
                     </div>
 

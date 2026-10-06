@@ -101,4 +101,25 @@ class CatController extends Controller
             ->route('cats.index')
             ->with('success', 'Data kucing berhasil dihapus');
     }
+
+    public function adopt(Cat $cat)
+    {
+        if ($cat->status !== 'tersedia') {
+            return back()->with(
+                'error',
+                'Kucing ini sudah tidak tersedia untuk diadopsi.'
+            );
+        }
+
+        $cat->update([
+            'status' => 'diadopsi',
+        ]);
+
+        return redirect()
+            ->route('cats.index')
+            ->with(
+                'success',
+                'Kucing berhasil diajukan untuk diadopsi.'
+            );
+    }
 }

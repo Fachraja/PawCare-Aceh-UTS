@@ -27,6 +27,13 @@
                 </div>
             @endif
 
+            {{-- Alert Error --}}
+            @if(session('error'))
+                <div class="bg-red-100 border border-red-300 text-red-700 px-4 py-3 rounded-lg mb-6">
+                    {{ session('error') }}
+                </div>
+            @endif
+
             {{-- Search --}}
             <form method="GET" action="{{ route('cats.index') }}" class="mb-8">
                 <div class="flex gap-2">
@@ -105,8 +112,11 @@
                                     <p>
                                         <strong>Status:</strong>
 
-                                        <span class="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs">
-                                            {{ $cat->status }}
+                                        <span class="px-2 py-1 rounded-full text-xs
+                                            {{ $cat->status === 'tersedia'
+                                                ? 'bg-green-100 text-green-700'
+                                                : 'bg-gray-100 text-gray-600' }}">
+                                            {{ ucfirst($cat->status) }}
                                         </span>
                                     </p>
 
@@ -121,16 +131,40 @@
                                 @endif
 
                                 {{-- Tombol --}}
-                                <div class="flex mt-5">
+                                <div class="flex flex-wrap gap-2 mt-5">
 
+                                    {{-- Detail --}}
+                                    <a href="{{ route('cats.show', $cat->id) }}"
+                                       class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">
+                                        Detail
+                                    </a>
+
+                                    {{-- Adopsi --}}
+                                    @if($cat->status === 'tersedia')
+                                        <form action="{{ route('cats.adopt', $cat->id) }}"
+                                              method="POST"
+                                              onsubmit="return confirm('Yakin ingin mengajukan adopsi kucing ini?')">
+
+                                            @csrf
+
+                                            <button
+                                                type="submit"
+                                                class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg">
+                                                Adopsi
+                                            </button>
+
+                                        </form>
+                                    @endif
+
+                                    {{-- Edit --}}
                                     <a href="{{ route('cats.edit', $cat->id) }}"
                                        class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg">
                                         Edit
                                     </a>
 
+                                    {{-- Hapus --}}
                                     <form action="{{ route('cats.destroy', $cat->id) }}"
-                                          method="POST"
-                                          class="ml-2">
+                                          method="POST">
 
                                         @csrf
                                         @method('DELETE')
