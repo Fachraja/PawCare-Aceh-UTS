@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CatController;
+use App\Http\Controllers\EntrustmentController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -14,13 +15,28 @@ Route::get('/dashboard', function () {
 
 Route::middleware('auth')->group(function () {
 
+    // =========================
+    // DATA KUCING
+    // =========================
     Route::resource('cats', CatController::class);
 
+    // =========================
+    // ADOPSI KUCING
+    // =========================
     Route::post(
         '/cats/{cat}/adopt',
         [CatController::class, 'adopt']
     )->name('cats.adopt');
 
+    // =========================
+    // PENITIPAN KUCING
+    // =========================
+    Route::resource('entrustments', EntrustmentController::class)
+        ->only(['index', 'create', 'store']);
+
+    // =========================
+    // PROFILE
+    // =========================
     Route::get('/profile', [ProfileController::class, 'edit'])
         ->name('profile.edit');
 
